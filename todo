@@ -1,0 +1,22 @@
+*			Detect cms (https://github.com/Tuhinshubhra/CMSeeK)
+			* Detect version
+			* Proceed basic tests for this CMS with dedicated tool (like WPScan) or
+			   with custom tests if no tools exist
+
+*			Improve the false_positive checker (for cases like tv.42.fr/config/bite, we have a 200 response on a wrong request, because wth)
+
+
+#Bugs
+
+*			Sublist3r not working for igvault.com, infinite looping
+
+* Use WPScan if Wordpress are used
+
+Output of the data :
+
+|	DOMAIN	|	CMS USED	|	TEST		|	RESULT	|
+|-------------------------------------------------------|
+|	x.x		|	N/A			|	BASIC_TESTS	|	✓✓✓✓✓	|
+|	url.x.x	|	WP v3.4.X	|	BASIC_TESTS	|	XXXXX	|
+|	wp.x.x	|	WP v3.4.X	|	WP_TESTS	|	✓✓✓✓✓	|
+
