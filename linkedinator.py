@@ -12,6 +12,9 @@ from bs4 import BeautifulSoup
 from colorama import Fore
 from art import *
 import base64
+import warnings
+
+warnings.filterwarnings('ignore')
 
 def print_header():
         ascii_header = text2art("LINKEDINATOR", "rand")
@@ -21,74 +24,79 @@ def print_header():
 class   Linkedinator:
     def __init__(self):
         print_header()
-        self.max_requests = 3
+        self.max_requests   = 100
         self.tags           = input("Enter your tags : ")
-        #self.user           = input("Enter your username : ")
-        self.user           = '+33768228651'
-        #self.password       = getpass("Enter your password : ")
-        self.password       = 'P4ssword1024'
+        self.user           = input("Enter your phone : ")
+        self.password       = getpass("Enter your password : ")
         self.LOGIN_URL      = "https://www.linkedin.com/"
         self.driver_path    = f"{os.getcwd()}/drivers/chromedriver"
         self.options        = webdriver.chrome.options.Options()
         self.options.add_argument('--profile-directory=Default')
         self.options.add_argument("--disable-plugins-discovery");
         self.options.binary_location = '/Users/niguinti/goinfre/Google Chrome.app/Contents/MacOS/Google Chrome'
-        #self.options.add_argument('headless');
+        self.options.add_argument('headless');
         self.driver         = webdriver.Chrome(executable_path=self.driver_path, chrome_options=self.options)
 
-    def catch_results(self):
+    def check_exists_by_xpath(self, xpath):
         try:
-            self.driver.find_element_by_class_name('search-no-results')
-            print("[" + Fore.RED + "X" + Fore.RESET + "] No more result !\n")
-            sys.exit(1)
+            self.driver.find_element_by_xpath(xpath)
         except:
             return False
+        return True
 
     def login(self):
         print("\nLet's connect\n")
         self.driver.get(self.LOGIN_URL)
         WebDriverWait(self.driver, 3).until(EC.visibility_of_element_located((By.NAME, 'session_key')))
+
         input_field     = self.driver.find_element_by_name('session_key')
         input_field.send_keys(self.user)
         input_field     = self.driver.find_element_by_name('session_password')
         input_field.send_keys(self.password)
         input_field.send_keys(Keys.RETURN)
+        
+        try:
+            WebDriverWait(self.driver, 3).until(EC.visibility_of_element_located((By.CLASS_NAME, 'nav-item__profile-member-photo')))
+        except:
+            print("[" + Fore.RED + "FAILED" + Fore.RESET + "] Connexion Failed...")
+            sys.exit(1)
         if self.driver.find_element_by_class_name('nav-item__profile-member-photo') is not False :
-            print("[" + Fore.GREEN + "SUCCESS" + Fore.RESET + "] Connexion succeed !\n")
+            print("[" + Fore.GREEN + "SUCCESS" + Fore.RESET + "] Connexion succeed !")
             self.tags = 'https://www.linkedin.com/search/results/people/?keywords='+ self.tags +'&origin=SWITCH_SEARCH_VERTICAL&page='
             i = 1
             requests_count = 0
-            while self.catch_results() is False :
-                self.driver.get(self.tags + str(i))
-                self.driver.get_screenshot_as_file('main-page.png')
-                connects = self.driver.find_elements_by_class_name('search-result__action-button')
-                for profile in connects :
-                    if requests_count < self.max_requests :
-                        profile.click()
-                        time.sleep(1)
-                        elem = self.driver.find_element_by_id('send-invite-modal')
-                        self.driver.get_screenshot_as_file('clic1.png')
-                        if elem.is_displayed():
-                            button = self.driver.find_element_by_xpath("//div[@class='artdeco-modal__actionbar text-align-right ember-view']/button[@class='ml1 artdeco-button artdeco-button--3 artdeco-button--primary ember-view']")
-                            button.click()
-                            print("[" + Fore.GREEN + "+" + Fore.RESET + "] Sended]!\n")
-                            self.driver.get_screenshot_as_file('clic2.png')
-                            requests_count += 1
-                    else:
-                        print("[" + Fore.RED + "MAX" + Fore.RESET + "] Limit of connection.\n")
+            
+            self.driver.get(self.tags + str(i))
+            while self.check_exists_by_xpath("//div[@class='search-no-results__container']") is False :
+                # Get all profiles
+                profiles = self.driver.find_elements_by_class_name('search-result__occluded-item')
+                for profile in profiles:
+                    if requests_count == self.max_requests:
+                        print("[" + Fore.RED + "MAX" + Fore.RESET + "] Limit of connection.")
                         sys.exit(0)
+                    try :
+                        connect = profile.find_element_by_class_name('search-result__action-button')
+                        if connect.text[0] == 'S':
+                            name        = profile.find_element_by_class_name('actor-name').text
+                            synopsis    = profile.find_element_by_class_name('subline-level-1').text
+                            answer      = input("[" + Fore.YELLOW + "?" + Fore.RESET + "] " + name + " | " + synopsis + " ? y/N : ").strip('\n\t\r ')
+                            if answer is 'y' :
+                                connect.click()
+                                elem = self.driver.find_element_by_id('send-invite-modal')
+                                if elem.is_displayed():
+                                    button = self.driver.find_element_by_xpath("//div[@class='artdeco-modal__actionbar text-align-right ember-view']/button[@class='ml1 artdeco-button artdeco-button--3 artdeco-button--primary ember-view']")
+                                    button.click()
+                                    print("[" + Fore.GREEN + "+" + Fore.RESET + "] Sended]!")
+                                    requests_count += 1
+                    except :
+                        pass
                 i += 1
-
+                print("[" + Fore.CYAN + "..." + Fore.RESET + "] Loading page " + str(i) + "...")
+                self.driver.get(self.tags + str(i))
+            print("[" + Fore.RED + "X" + Fore.RESET + "] No more result !")
+            sys.exit(1)
         else:
-            print("[" + Fore.RED + "FAILED" + Fore.RESET + "] Connexion error.\n")
-
-        self.driver.close()
-
-    def start(self):
-        page = 1
-        response = make_request(domain+page, False)
-        while response is not None and response.status_code == 200 and no_bad_keyword:
-            print("[" + Fore.GREEN + "✓" + Fore.RESET + "]\t[%s/%s] succeed" % (domain, test))
+            print("[" + Fore.RED + "FAILED" + Fore.RESET + "] Connexion error.")
 
     def _close(self):
         self.driver.close()
@@ -96,8 +104,7 @@ class   Linkedinator:
 def     linkedinator_launch():
     instance = Linkedinator()
     instance.login()
-    #instance.start()
-    #instance.destroy()
+    instance.destroy()
 
 if __name__ == '__main__':
     linkedinator_launch()
