@@ -10,10 +10,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from bs4 import BeautifulSoup
 from colorama import Fore
 from art import *
-import base64
 import warnings
 import traceback
 warnings.filterwarnings('ignore')
@@ -65,7 +63,6 @@ class   Linkedinator:
             sys.exit(1)
         if self.driver.find_element_by_class_name('nav-item__profile-member-photo') is not False :
             print("[" + Fore.GREEN + "SUCCESS" + Fore.RESET + "] Connexion succeed !")
-            #self.tags = 'https://www.linkedin.com/search/results/people/?facetNetwork=%5B%22O%22%5D&keywords='+ self.tags +'&origin=FACETED_SEARCH&page='
             self.tags = 'https://www.linkedin.com/search/results/people/?keywords='+ self.tags +'&origin=FACETED_SEARCH&page='
             i = 1
             requests_count = 0
