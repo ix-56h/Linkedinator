@@ -1,6 +1,5 @@
 art
 colorama
-bs4
 selenium
 getpass
 requests
