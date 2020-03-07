@@ -10,7 +10,7 @@ sh setup.sh
 Download the [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) corresponding to your chrome version and your system and unzip into `drivers` directory.
 
 ## Usage
-![Usage](https://www.zupimages.net/up/20/10/h3s6.png)
+![Usage](https://www.zupimages.net/up/20/10/sq8g.png)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
