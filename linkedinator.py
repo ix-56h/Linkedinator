@@ -2,6 +2,8 @@
 import sys
 import os 
 import time
+import requests
+import py_imgcat
 from getpass import getpass
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -24,7 +26,7 @@ def print_header():
 class   Linkedinator:
     def __init__(self):
         print_header()
-        self.max_requests   = 100
+        self.max_requests   = 90
         self.tags           = input("Enter your tags : ")
         self.user           = input("Enter your phone : ")
         self.password       = getpass("Enter your password : ")
@@ -62,7 +64,7 @@ class   Linkedinator:
             sys.exit(1)
         if self.driver.find_element_by_class_name('nav-item__profile-member-photo') is not False :
             print("[" + Fore.GREEN + "SUCCESS" + Fore.RESET + "] Connexion succeed !")
-            self.tags = 'https://www.linkedin.com/search/results/people/?keywords='+ self.tags +'&origin=SWITCH_SEARCH_VERTICAL&page='
+            self.tags = 'https://www.linkedin.com/search/results/people/?facetNetwork=%5B%22O%22%5D&keywords='+ self.tags +'&origin=FACETED_SEARCH&page='
             i = 1
             requests_count = 0
             
@@ -79,14 +81,17 @@ class   Linkedinator:
                         if connect.text[0] == 'S':
                             name        = profile.find_element_by_class_name('actor-name').text
                             synopsis    = profile.find_element_by_class_name('subline-level-1').text
+                            img         = profile.find_element_by_class_name('ivm-view-attr__img--centered').get_attribute('src')
+                            py_imgcat.imgcat(requests.get(img).content)
                             answer      = input("[" + Fore.YELLOW + "?" + Fore.RESET + "] " + name + " | " + synopsis + " ? y/N : ").strip('\n\t\r ')
                             if answer is 'y' :
                                 connect.click()
+                                WebDriverWait(self.driver, 2).until(EC.visibility_of_element_located((By.ID, 'send-invite-modal')))
                                 elem = self.driver.find_element_by_id('send-invite-modal')
                                 if elem.is_displayed():
                                     button = self.driver.find_element_by_xpath("//div[@class='artdeco-modal__actionbar text-align-right ember-view']/button[@class='ml1 artdeco-button artdeco-button--3 artdeco-button--primary ember-view']")
                                     button.click()
-                                    print("[" + Fore.GREEN + "+" + Fore.RESET + "] Sended]!")
+                                    print("[" + Fore.GREEN + "+" + Fore.RESET + "] Sended !")
                                     requests_count += 1
                     except :
                         pass
