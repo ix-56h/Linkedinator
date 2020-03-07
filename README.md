@@ -13,4 +13,4 @@ Download the [chromedriver](https://sites.google.com/a/chromium.org/chromedriver
 ![Usage](https://www.zupimages.net/up/20/10/sq8g.png)
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[WTFPL](http://www.wtfpl.net/)
