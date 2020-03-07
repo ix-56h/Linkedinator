@@ -15,7 +15,7 @@ from colorama import Fore
 from art import *
 import base64
 import warnings
-
+import traceback
 warnings.filterwarnings('ignore')
 
 def print_header():
@@ -37,6 +37,7 @@ class   Linkedinator:
         self.options.add_argument("--disable-plugins-discovery");
         self.options.binary_location = '/Users/niguinti/goinfre/Google Chrome.app/Contents/MacOS/Google Chrome'
         self.options.add_argument('headless');
+        self.options.add_argument('window-size=1200x900')
         self.driver         = webdriver.Chrome(executable_path=self.driver_path, chrome_options=self.options)
 
     def check_exists_by_xpath(self, xpath):
@@ -64,7 +65,8 @@ class   Linkedinator:
             sys.exit(1)
         if self.driver.find_element_by_class_name('nav-item__profile-member-photo') is not False :
             print("[" + Fore.GREEN + "SUCCESS" + Fore.RESET + "] Connexion succeed !")
-            self.tags = 'https://www.linkedin.com/search/results/people/?facetNetwork=%5B%22O%22%5D&keywords='+ self.tags +'&origin=FACETED_SEARCH&page='
+            #self.tags = 'https://www.linkedin.com/search/results/people/?facetNetwork=%5B%22O%22%5D&keywords='+ self.tags +'&origin=FACETED_SEARCH&page='
+            self.tags = 'https://www.linkedin.com/search/results/people/?keywords='+ self.tags +'&origin=FACETED_SEARCH&page='
             i = 1
             requests_count = 0
             
@@ -85,14 +87,16 @@ class   Linkedinator:
                             py_imgcat.imgcat(requests.get(img).content)
                             answer      = input("[" + Fore.YELLOW + "?" + Fore.RESET + "] " + name + " | " + synopsis + " ? y/N : ").strip('\n\t\r ')
                             if answer is 'y' :
-                                connect.click()
+                                try :
+                                    connect.click()
+                                except :
+                                    traceback.print_exc()
                                 WebDriverWait(self.driver, 2).until(EC.visibility_of_element_located((By.ID, 'send-invite-modal')))
                                 elem = self.driver.find_element_by_id('send-invite-modal')
-                                if elem.is_displayed():
-                                    button = self.driver.find_element_by_xpath("//div[@class='artdeco-modal__actionbar text-align-right ember-view']/button[@class='ml1 artdeco-button artdeco-button--3 artdeco-button--primary ember-view']")
-                                    button.click()
-                                    print("[" + Fore.GREEN + "+" + Fore.RESET + "] Sended !")
-                                    requests_count += 1
+                                button = self.driver.find_element_by_xpath("//div[@class='artdeco-modal__actionbar text-align-right ember-view']/button[@class='ml1 artdeco-button artdeco-button--3 artdeco-button--primary ember-view']")
+                                button.click()
+                                print("[" + Fore.GREEN + "+" + Fore.RESET + "] Sended !")
+                                requests_count += 1
                     except :
                         pass
                 i += 1
