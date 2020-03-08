@@ -29,7 +29,7 @@ class   Linkedinator:
         self.LOGIN_URL      = "https://www.linkedin.com/"
         
         parser = argparse.ArgumentParser()
-        parser.add_argument("-g", "--gender", help="Get profile from gender. 1 = girl, 2 = male", type=int, choices=[1, 2])
+        parser.add_argument("-g", "--gender", help="Get profile by gender. 1 = girl, 2 = male", type=int, choices=[1, 2])
         parser.add_argument("-r", "--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4])
         parser.add_argument("-m", "--max", help="Set maximum connections requests.\tDefault = 50", type=int, default=50)
         parser.add_argument("-l", "--location", help="Set the chrome binary location", type=str)
