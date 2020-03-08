@@ -1,5 +1,5 @@
 art
 colorama
 selenium
-getpass
 requests
+gender_guesser
