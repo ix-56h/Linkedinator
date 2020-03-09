@@ -107,7 +107,10 @@ class   Linkedinator:
                         if connect.text[0] == 'S':
                             name        = profile.find_element_by_class_name('actor-name').text
                             synopsis    = profile.find_element_by_class_name('subline-level-1').text
-                            img         = profile.find_element_by_class_name('ivm-view-attr__img--centered').get_attribute('src')
+                            try :
+                                img     = profile.find_element_by_class_name('ivm-view-attr__img--centered').get_attribute('src')
+                            except :
+                                img = 'https://cdn.intra.42.fr/users/small_default.png'
                             g           = gender.Detector()
                             g = g.get_gender(name.split(' ')[0])
                             gender_condition = 0
