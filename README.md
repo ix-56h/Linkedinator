@@ -20,7 +20,7 @@ usage: linkedinator.py [-h] [-g {1,2}] [-r {1,2,3,4}] [-m MAX] [-l LOCATION]
 optional arguments:
   -h, --help            show this help message and exit
   -g {1,2}, --gender {1,2}
-                        Get profile by gender. 1 = girl, 2 = male
+                        Get profile by gender. 1 = Woman, 2 = Man
   -r {1,2,3,4}, --range {1,2,3,4}
                         Set "mutual connection" search argument. 4 = All,
                         Default = Don't care
