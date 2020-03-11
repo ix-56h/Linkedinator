@@ -9,16 +9,18 @@ Linkedin bot to connect with people who's corresponding to your search configura
 ```bash
 sh setup.sh
 ```
-Download the [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) corresponding to your chrome version and your system and unzip into `drivers` directory.
+Download the [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) or [geckodriver](https://github.com/mozilla/geckodriver/releases/tag/v0.26.0) corresponding to your browser version and your system into `drivers` directory.
 
 ## Usage
 
 ```
-usage: linkedinator.py [-h] [-g {1,2}] [-r {1,2,3,4}] [-m MAX] [-l LOCATION]
-                       [-L] [--auto]
+usage: linkedinator.py [-h] -d {firefox,chrome} [-g {1,2}] [-r {1,2,3,4}]
+                       [-m MAX] [-l LOCATION] [-L] [--auto]
 
 optional arguments:
   -h, --help            show this help message and exit
+  -d {firefox,chrome}, --driver {firefox,chrome}
+                        Set the driver to use.
   -g {1,2}, --gender {1,2}
                         Get profile by gender. 1 = Woman, 2 = Man
   -r {1,2,3,4}, --range {1,2,3,4}
