@@ -37,10 +37,11 @@ def print_header():
 
 class   Linkedinator:
     def __init__(self):
-        self.driver_path    = f"{os.getcwd()}/drivers/chromedriver"
+        self.driver_path    = f"{os.getcwd()}/drivers/"
         self.LOGIN_URL      = "https://www.linkedin.com/"
 
-        parser = argparse.ArgumentParser()
+        parser              = argparse.ArgumentParser()
+        parser.add_argument("-d", "--driver", help="Set the driver to use.", type=str, choices=["firefox", "chrome"], required=True)
         parser.add_argument("-g", "--gender", help="Get profile by gender. 1 = Woman, 2 = Man", type=int, choices=[1, 2])
         parser.add_argument("-r", "--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4])
         parser.add_argument("-m", "--max", help="Set maximum connections requests.\tDefault = 50", type=int, default=50)
@@ -48,22 +49,27 @@ class   Linkedinator:
         parser.add_argument("-L", "--live", help="Run the bot in live mod", action="store_true")
         parser.add_argument("--auto", help="Connect automatically with everyone.", action="store_true")
         self.args = parser.parse_args()
-        
-        self.options        = webdriver.chrome.options.Options()
+        if "firefox" in self.args.driver :
+            self.options        = webdriver.firefox.options.Options()
+        elif "chrome" in self.args.driver:
+            self.options        = webdriver.chrome.options.Options()
         self.options.add_argument('--profile-directory=Default')
         self.options.add_argument("--disable-plugins-discovery");
         self.options.add_argument('window-size=1200x900')
         if self.args.location:
             self.options.binary_location = self.args.location
-        if not self.args.live:
-            self.options.add_argument('headless');
-        
+        if "firefox" in self.args.driver :
+            if not self.args.live:
+                self.options.headless = True;
+            self.driver         = webdriver.Firefox(executable_path=self.driver_path+"geckodriver", options=self.options)
+        elif "chrome" in self.args.driver:
+            if not self.args.live:
+                self.options.add_argument('headless');
+            self.driver         = webdriver.Chrome(executable_path=self.driver_path+"chromedriver", chrome_options=self.options)
         print_header()
         self.tags           = input("Enter your tags : ")
         self.user           = input("Enter your phone : ")
         self.password       = getpass("Enter your password : ")
-
-        self.driver         = webdriver.Chrome(executable_path=self.driver_path, chrome_options=self.options)
 
     def check_exists_by_xpath(self, xpath):
         try:
