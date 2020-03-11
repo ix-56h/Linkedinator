@@ -18,16 +18,28 @@ import warnings
 import traceback
 warnings.filterwarnings('ignore')
 
+# Colorize input `message` with `color`
+def colorize(color, message):
+        return color + message + Fore.RESET
+
+# Prettify a message with a prefix: [`color``prefix``color_end`] `message`
+def pretty_message(color, prefix, message):
+        return "[" + colorize(color, prefix)  + "] " + message
+
+# Pretty print a message with a prefix: [`color``prefix``color_end`] `message`
+def print_pretty(color, prefix, message):
+        print(pretty_message(color, prefix, message))
+
 def print_header():
         ascii_header = text2art("LINKEDINATOR", "rand")
-        print(ascii_header)
-        print("\t\t\tNeed a job\n")
+        print(colorize(Fore.RED, ascii_header))
+        print(colorize(Fore.CYAN, "\t\t\tNeed a job\n"))
 
 class   Linkedinator:
     def __init__(self):
         self.driver_path    = f"{os.getcwd()}/drivers/chromedriver"
         self.LOGIN_URL      = "https://www.linkedin.com/"
-        
+
         parser = argparse.ArgumentParser()
         parser.add_argument("-g", "--gender", help="Get profile by gender. 1 = Woman, 2 = Man", type=int, choices=[1, 2])
         parser.add_argument("-r", "--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4])
@@ -89,23 +101,24 @@ class   Linkedinator:
         try:
             WebDriverWait(self.driver, 4).until(EC.visibility_of_element_located((By.CLASS_NAME, 'nav-item__profile-member-photo')))
         except:
-            print("[" + Fore.RED + "FAILED" + Fore.RESET + "] Connexion Failed...")
+            print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
             sys.exit(1)
         if self.driver.find_element_by_class_name('nav-item__profile-member-photo') is not False :
-            print("[" + Fore.GREEN + "SUCCESS" + Fore.RESET + "] Connexion succeed !")
+            print_pretty(Fore.GREEN, "SUCCESS", "Connexion succeed !")
             self.driver.get(self.tags + str(i))
             while self.check_exists_by_xpath("//div[@class='search-no-results__container']") is False :
                 # Get all profiles
                 time.sleep(1);
                 try :
                     self.driver.find_element_by_class_name("search-paywall__limit")
-                    print("[" + Fore.YELLOW + "REACH_MAX_SEARCH" + Fore.RESET + "] Limit of search reached.")
+                    print_pretty(Fore.YELLOW, "REACH_MAX_SEARCH", "Limit of search reached.")
                 except :
                     pass
                 profiles = self.driver.find_elements_by_class_name('search-result__occluded-item')
                 for profile in profiles:
                     if requests_count == self.args.max:
-                        print("[" + Fore.RED + "MAX" + Fore.RESET + "] Limit of connection.")
+                        print_pretty(Fore.RED, "MAX", "Limit of connection.")
+
                         sys.exit(0)
                     try :
                         connect = profile.find_element_by_class_name('search-result__action-button')
@@ -140,17 +153,17 @@ class   Linkedinator:
                                 if self.args.auto :
                                     py_imgcat.imgcat(requests.get(img).content)
                                 else :
-                                    print("[" + Fore.GREEN + "+" + Fore.RESET + "] Sended !")
+                                    print_pretty(Fore.GREEN, "+", "Sended !")
                                 requests_count += 1
                     except :
                         pass
                 i += 1
-                print("[" + Fore.CYAN + "..." + Fore.RESET + "] Loading page " + str(i) + "...")
+                print_pretty(Fore.CYAN, "...", "Loading page" + str(i) + "...")
                 self.driver.get(self.tags + str(i))
-            print("[" + Fore.RED + "X" + Fore.RESET + "] No more result !")
+            print_pretty(Fore.RED, "X", "No more result !")
             sys.exit(1)
         else:
-            print("[" + Fore.RED + "FAILED" + Fore.RESET + "] Connexion error.")
+            print_pretty(Fore.RED, "FAILED", "Connexion error.")
 
     def _close(self):
         self.driver.close()
