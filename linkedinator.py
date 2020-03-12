@@ -45,7 +45,7 @@ class   Linkedinator:
         parser.add_argument("-g", "--gender", help="Get profile by gender. 1 = Woman, 2 = Man", type=int, choices=[1, 2])
         parser.add_argument("-r", "--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4])
         parser.add_argument("-m", "--max", help="Set maximum connections requests.\tDefault = 50", type=int, default=50)
-        parser.add_argument("-l", "--location", help="Set the chrome binary location", type=str)
+        parser.add_argument("-l", "--location", help="Set the browser binary location", type=str)
         parser.add_argument("-L", "--live", help="Run the bot in live mod", action="store_true")
         parser.add_argument("--auto", help="Connect automatically with everyone.", action="store_true")
         self.args = parser.parse_args()
@@ -61,11 +61,11 @@ class   Linkedinator:
         if "firefox" in self.args.driver :
             if not self.args.live:
                 self.options.headless = True;
-            self.driver         = webdriver.Firefox(executable_path=self.driver_path+"geckodriver", options=self.options)
+            self.driver = webdriver.Firefox(executable_path=self.driver_path+"geckodriver", options=self.options)
         elif "chrome" in self.args.driver:
             if not self.args.live:
                 self.options.add_argument('headless');
-            self.driver         = webdriver.Chrome(executable_path=self.driver_path+"chromedriver", chrome_options=self.options)
+            self.driver = webdriver.Chrome(executable_path=self.driver_path+"chromedriver", chrome_options=self.options)
         print_header()
         self.tags           = input("Enter your tags : ")
         self.user           = input("Enter your phone : ")

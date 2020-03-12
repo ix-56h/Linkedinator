@@ -1,0 +1,35 @@
+1583980481989	mozrunner::runner	INFO	Running command: "/Applications/Firefox.app/Contents/MacOS/firefox-bin" "-marionette" "--profile-directory=Default" "--disable-plugins-discovery" "window-size=1200x900" "-headless" "-foreground" "-no-remote" "-profile" "/var/folders/zz/zyxvpxvq6csfxvn_n0003smr000yd6/T/rust_mozprofiler66kXE"
+*** You are running in headless mode.
+1583980483531	addons.webextension.doh-rollout@mozilla.org	WARN	Loading extension 'doh-rollout@mozilla.org': Reading manifest: Invalid extension permission: networkStatus
+1583980483646	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: mozillaAddons
+1583980483646	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: telemetry
+1583980483647	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: resource://pdf.js/
+1583980483647	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: about:reader*
+1583980485914	Marionette	INFO	Listening on port 53367
+1583980485979	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+Exiting due to channel error.
+Exiting due to channel error.
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+Exiting due to channel error.
+1583980501446	mozrunner::runner	INFO	Running command: "/Applications/Firefox.app/Contents/MacOS/firefox-bin" "-marionette" "--profile-directory=Default" "--disable-plugins-discovery" "window-size=1200x900" "-headless" "-foreground" "-no-remote" "-profile" "/var/folders/zz/zyxvpxvq6csfxvn_n0003smr000yd6/T/rust_mozprofile6Pix5W"
+*** You are running in headless mode.
+1583980501819	addons.webextension.doh-rollout@mozilla.org	WARN	Loading extension 'doh-rollout@mozilla.org': Reading manifest: Invalid extension permission: networkStatus
+1583980501940	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: mozillaAddons
+1583980501940	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: telemetry
+1583980501940	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: resource://pdf.js/
+1583980501940	addons.webextension.screenshots@mozilla.org	WARN	Loading extension 'screenshots@mozilla.org': Reading manifest: Invalid extension permission: about:reader*
+JavaScript error: resource://gre/modules/XULStore.jsm, line 66: Error: Can't find profile directory.
+1583980503897	Marionette	INFO	Listening on port 53431
+1583980503998	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript warning: https://static-exp1.licdn.com/sc/h/br/9sffows66bc78wcyu5rk58gkm, line 3742: unreachable code after return statement
+JavaScript error: , line 0: uncaught exception: AbortError: Aborted
+JavaScript warning: https://static-exp1.licdn.com/sc/h/br/9sffows66bc78wcyu5rk58gkm, line 3742: unreachable code after return statement
+JavaScript warning: https://static-exp1.licdn.com/sc/h/br/9sffows66bc78wcyu5rk58gkm, line 3742: unreachable code after return statement
+JavaScript error: , line 0: uncaught exception: AbortError: Aborted
+JavaScript warning: https://static-exp1.licdn.com/sc/h/br/9sffows66bc78wcyu5rk58gkm, line 3742: unreachable code after return statement
+Exiting due to channel error.
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+Exiting due to channel error.
+Exiting due to channel error.

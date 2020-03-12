@@ -28,7 +28,7 @@ optional arguments:
                         Default = Don't care
   -m MAX, --max MAX     Set maximum connections requests. Default = 50
   -l LOCATION, --location LOCATION
-                        Set the chrome binary location
+                        Set the browser binary location
   -L, --live            Run the bot in live mod
   --auto                Connect automatically with everyone.
 ```
