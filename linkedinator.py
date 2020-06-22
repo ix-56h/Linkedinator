@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
-import os 
+import platform
+import os
 import time
 import requests
 import py_imgcat
@@ -16,6 +17,11 @@ from colorama import Fore
 from art import *
 import warnings
 import traceback
+
+op_sys = platform.system()
+binary_suffix = ''
+if op_sys == "Windows" :
+    binary_suffix = '.exe'
 warnings.filterwarnings('ignore')
 
 # Colorize input `message` with `color`
@@ -38,7 +44,7 @@ def print_header():
 class   Linkedinator:
     def __init__(self):
         self.driver_path    = f"{os.getcwd()}/drivers/"
-        self.LOGIN_URL      = "https://www.linkedin.com/"
+        self.LOGIN_URL      = "https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin"
 
         parser              = argparse.ArgumentParser()
         parser.add_argument("-d", "--driver", help="Set the driver to use.", type=str, choices=["firefox", "chrome"], required=True)
@@ -47,6 +53,8 @@ class   Linkedinator:
         parser.add_argument("-m", "--max", help="Set maximum connections requests.\tDefault = 50", type=int, default=50)
         parser.add_argument("-l", "--location", help="Set the browser binary location", type=str)
         parser.add_argument("-L", "--live", help="Run the bot in live mod", action="store_true")
+        parser.add_argument("-P", "--premium", help="Connect only with Premium", action="store_true")
+        parser.add_argument("--debug", help="Set debug flag", action="store_true")
         parser.add_argument("--auto", help="Connect automatically with everyone.", action="store_true")
         self.args = parser.parse_args()
         if "firefox" in self.args.driver :
@@ -61,14 +69,14 @@ class   Linkedinator:
         if "firefox" in self.args.driver :
             if not self.args.live:
                 self.options.headless = True;
-            self.driver = webdriver.Firefox(executable_path=self.driver_path+"geckodriver", options=self.options)
+            self.driver = webdriver.Firefox(executable_path=self.driver_path+"geckodriver" + binary_suffix, options=self.options)
         elif "chrome" in self.args.driver:
             if not self.args.live:
                 self.options.add_argument('headless');
-            self.driver = webdriver.Chrome(executable_path=self.driver_path+"chromedriver", chrome_options=self.options)
+            self.driver = webdriver.Chrome(executable_path=self.driver_path+"chromedriver" + binary_suffix, chrome_options=self.options)
         print_header()
         self.tags           = input("Enter your tags : ")
-        self.user           = input("Enter your phone : ")
+        self.user           = getpass("Enter your phone : ")
         self.password       = getpass("Enter your password : ")
 
     def check_exists_by_xpath(self, xpath):
@@ -92,9 +100,9 @@ class   Linkedinator:
             self.tags       = 'https://www.linkedin.com/search/results/people/?facetNetwork=["O"%2C"F"%2C"S"]&keywords='+ self.tags +'&origin=FACETED_SEARCH&page='
         else :
             self.tags       = 'https://www.linkedin.com/search/results/people/?keywords='+ self.tags +'&origin=FACETED_SEARCH&page='
-        
+
         print("\nLet's connect\n")
-        
+
         self.driver.get(self.LOGIN_URL)
         WebDriverWait(self.driver, 3).until(EC.visibility_of_element_located((By.NAME, 'session_key')))
 
@@ -103,10 +111,13 @@ class   Linkedinator:
         input_field     = self.driver.find_element_by_name('session_password')
         input_field.send_keys(self.password)
         input_field.send_keys(Keys.RETURN)
-        
+
         try:
-            WebDriverWait(self.driver, 4).until(EC.visibility_of_element_located((By.CLASS_NAME, 'nav-item__profile-member-photo')))
-        except:
+            WebDriverWait(self.driver, 7).until(EC.visibility_of_element_located((By.CLASS_NAME, 'nav-item__profile-member-photo')))
+        except Exception as e :
+            if self.args.debug :
+                print(e);
+                traceback.print_exc()
             print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
             sys.exit(1)
         if self.driver.find_element_by_class_name('nav-item__profile-member-photo') is not False :
@@ -122,20 +133,27 @@ class   Linkedinator:
                     pass
                 profiles = self.driver.find_elements_by_class_name('search-result__occluded-item')
                 for profile in profiles:
-                    if requests_count == self.args.max:
+                    if requests_count >= self.args.max:
                         print_pretty(Fore.RED, "MAX", "Limit of connection.")
-
                         sys.exit(0)
                     try :
                         connect = profile.find_element_by_class_name('search-result__action-button')
                         if connect.text[0] == 'S':
+                            try :
+                                premium = profile.find_element_by_class_name('premium-icon')
+                                premium = "[" + Fore.CYAN + "Premium User"+ Fore.RESET + "]\n"
+                            except :
+                                premium = "Not premium\n"
+                                pass
+                            if self.args.premium and premium == "Not premium\n" :
+                                continue
                             name        = profile.find_element_by_class_name('actor-name').text
                             synopsis    = profile.find_element_by_class_name('subline-level-1').text
                             try :
                                 img     = profile.find_element_by_class_name('ivm-view-attr__img--centered').get_attribute('src')
                             except :
                                 img = 'https://cdn.intra.42.fr/users/small_default.png'
-                            g           = gender.Detector()
+                            g = gender.Detector()
                             g = g.get_gender(name.split(' ')[0])
                             gender_condition = 0
                             if not self.args.gender :
@@ -145,23 +163,36 @@ class   Linkedinator:
                             elif self.args.gender == 2 and "female" not in g :
                                 gender_condition = 1
                             if not self.args.auto and gender_condition == 1 :
-                                py_imgcat.imgcat(requests.get(img).content)
-                                answer = input("[" + Fore.YELLOW + "?" + Fore.RESET + "] " + name + " | " + synopsis + " ? y/N : ").strip('\n\t\r ')
-                            if answer is 'y' and gender_condition == 1 :
+                                try:
+                                    py_imgcat.imgcat(requests.get(img).content)
+                                except :
+                                    print_pretty(Fore.MAGENTA, ":/", "Can't display image in terminal, please check Readme.")
+                                answer = input(premium + "[" + Fore.YELLOW + "?" + Fore.RESET + "] " + name + " | " + synopsis + " ? y/N : ").strip('\n\t\r ')
+                            if answer == 'y' and gender_condition == 1 :
                                 try :
                                     connect.click()
-                                except :
-                                    traceback.print_exc()
+                                except Exception as e :
+                                    if self.args.debug :
+                                        traceback.print_exc()
+                                        print(e);
+                                    continue
                                 WebDriverWait(self.driver, 2).until(EC.visibility_of_element_located((By.ID, 'send-invite-modal')))
                                 elem = self.driver.find_element_by_id('send-invite-modal')
                                 button = self.driver.find_element_by_xpath("//div[@class='artdeco-modal__actionbar text-align-right ember-view']/button[@class='ml1 artdeco-button artdeco-button--3 artdeco-button--primary ember-view']")
                                 button.click()
+                                requests_count += 1
                                 if self.args.auto :
-                                    py_imgcat.imgcat(requests.get(img).content)
+                                    try :
+                                        py_imgcat.imgcat(requests.get(img).content)
+                                    except :
+                                        pass
+                                    print(premium + "[" + Fore.GREEN + "+" + Fore.RESET + "] " + name + "\n" + synopsis + '\n').strip('\n\t\r ')
                                 else :
                                     print_pretty(Fore.GREEN, "+", "Sended !")
-                                requests_count += 1
-                    except :
+                    except Exception as e:
+                        if self.args.debug :
+                            print(e)
+                            traceback.print_exc()
                         pass
                 i += 1
                 print_pretty(Fore.CYAN, "...", "Loading page" + str(i) + "...")
