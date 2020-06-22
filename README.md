@@ -1,6 +1,6 @@
 # Linkedinator
 
-Linkedin bot to connect with people who's corresponding to your search configuration.
+Linkedin bot to connect with people matching with your search request.
 
 ![Linkedinator](https://www.zupimages.net/up/20/10/sq8g.png)
 
