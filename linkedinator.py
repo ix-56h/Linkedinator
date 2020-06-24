@@ -15,6 +15,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from colorama import Fore
 from art import *
+import urllib.parse
 import warnings
 import traceback
 
@@ -54,6 +55,7 @@ class   Linkedinator:
         parser.add_argument("-l", "--location", help="Set the browser binary location", type=str)
         parser.add_argument("-L", "--live", help="Run the bot in live mod", action="store_true")
         parser.add_argument("-P", "--premium", help="Connect only with Premium", action="store_true")
+        parser.add_argument("-u", "--url", help="Use custom search URL request.", type=str)
         parser.add_argument("--debug", help="Set debug flag", action="store_true")
         parser.add_argument("--auto", help="Connect automatically with everyone.", action="store_true")
         self.args = parser.parse_args()
@@ -75,7 +77,10 @@ class   Linkedinator:
                 self.options.add_argument('headless');
             self.driver = webdriver.Chrome(executable_path=self.driver_path+"chromedriver" + binary_suffix, chrome_options=self.options)
         print_header()
-        self.tags           = input("Enter your tags : ")
+        if not self.args.url :
+            self.tags       = input("Enter your tags : ")
+        else :
+            print_pretty(Fore.CYAN, "!", "Custom search request used. -u/--url")
         self.user           = getpass("Enter your phone : ")
         self.password       = getpass("Enter your password : ")
 
@@ -90,7 +95,9 @@ class   Linkedinator:
         i               = 1
         requests_count  = 0
         answer          = 'y'
-        if self.args.range == 1:
+        if self.args.url :
+            self.tags       = urllib.parse.unquote(self.args.url).replace('\\', '') + '&page='
+        elif self.args.range == 1:
             self.tags       = 'https://www.linkedin.com/search/results/people/?facetNetwork=["F"]&keywords='+ self.tags +'&origin=FACETED_SEARCH&page='
         elif self.args.range == 2:
             self.tags       = 'https://www.linkedin.com/search/results/people/?facetNetwork=["S"]&keywords='+ self.tags +'&origin=FACETED_SEARCH&page='
@@ -119,10 +126,15 @@ class   Linkedinator:
                 print(e);
                 traceback.print_exc()
             print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
-            sys.exit(1)
+            return
         if self.driver.find_element_by_class_name('nav-item__profile-member-photo') is not False :
             print_pretty(Fore.GREEN, "SUCCESS", "Connexion succeed !")
             self.driver.get(self.tags + str(i))
+            try :
+                self.driver.find_element_by_class_name('search-results__total')
+            except :
+                print_pretty(Fore.RED, ":/", "No result.")
+                return
             while self.check_exists_by_xpath("//div[@class='search-no-results__container']") is False :
                 # Get all profiles
                 time.sleep(1);
@@ -208,7 +220,6 @@ class   Linkedinator:
 def     linkedinator_launch():
     instance = Linkedinator()
     instance.login()
-    instance.destroy()
 
 if __name__ == '__main__':
     linkedinator_launch()
