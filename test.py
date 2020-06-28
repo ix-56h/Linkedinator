@@ -124,6 +124,13 @@ class Linkedinator(cmd.Cmd):
         except :
             return False
 
+    def check_exists_by_xpath(self, xpath):
+        try:
+            self.driver.find_element_by_xpath(xpath)
+        except:
+            return False
+        return True
+
     def do_connect(self, args):
         """Connect to your Linkedin account"""
         self.LOGIN_URL      = "https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin"
@@ -177,7 +184,7 @@ class Linkedinator(cmd.Cmd):
         else :
             print_pretty(Fore.CYAN, "!", "Custom search request used. -u/--url")
         
-        search_url = format_url(args.range, tags, args.url)
+        search_url = format_url(args.range, tags, argandrl)
 
         while self.check_exists_by_xpath("//div[@class='search-no-results__container']") is False :
             # Get all profiles
