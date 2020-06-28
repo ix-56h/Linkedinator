@@ -164,10 +164,14 @@ class Linkedinator(cmd.Cmd):
             print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
 
     def do_people_connect(self, arguments):
+        i = 1
+        requests_count  = 0
+        answer          = 'y'
+
         if self.connected == 0:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
             return
-        i = 1
+
         parser = argparse.ArgumentParser(prog='people_connect')
         parser.add_argument("-g", "--gender", help="Get profile by gender. 1 = Woman, 2 = Man", type=int, choices=[1, 2])
         parser.add_argument("-r", "--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4])
