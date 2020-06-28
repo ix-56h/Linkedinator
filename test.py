@@ -86,6 +86,7 @@ class Linkedinator(cmd.Cmd):
         self.connected      = 0
         self.prompt         = '$> '
 
+        # Main script arguments definition
         parser              = argparse.ArgumentParser()
         parser.add_argument("-d", "--driver", help="Set the driver to use.", type=str, choices=["firefox", "chrome"], required=True)
         parser.add_argument("-l", "--location", help="Set the browser binary location", type=str)
@@ -96,6 +97,15 @@ class Linkedinator(cmd.Cmd):
         except argparse.ArgumentError as exc:
             print(exc.message, '\n', exc.argument)
             return False
+
+        # people_connect_parser arguments definition
+        self.people_connect_parser = argparse.ArgumentParser(prog='people_connect')
+        self.people_connect_parser.add_argument("-g", "--gender", help="Get profile by gender. 1 = Woman, 2 = Man", type=int, choices=[1, 2])
+        self.people_connect_parser.add_argument("-r", "--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4])
+        self.people_connect_parser.add_argument("-m", "--max", help="Set maximum connections requests.\tDefault = 50", type=int, default=50)
+        self.people_connect_parser.add_argument("-P", "--premium", help="Connect only with Premium", action="store_true")
+        self.people_connect_parser.add_argument("-u", "--url", help="Use custom search URL request.", type=str)
+        self.people_connect_parser.add_argument("--auto", help="Connect automatically with everyone.", action="store_true")
 
         print_pretty(Fore.YELLOW, "...", "Setting up selenium")
         if "firefox" in self.args.driver :
@@ -172,15 +182,8 @@ class Linkedinator(cmd.Cmd):
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
             return
 
-        parser = argparse.ArgumentParser(prog='people_connect')
-        parser.add_argument("-g", "--gender", help="Get profile by gender. 1 = Woman, 2 = Man", type=int, choices=[1, 2])
-        parser.add_argument("-r", "--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4])
-        parser.add_argument("-m", "--max", help="Set maximum connections requests.\tDefault = 50", type=int, default=50)
-        parser.add_argument("-P", "--premium", help="Connect only with Premium", action="store_true")
-        parser.add_argument("-u", "--url", help="Use custom search URL request.", type=str)
-        parser.add_argument("--auto", help="Connect automatically with everyone.", action="store_true")
         try:
-            args = parser.parse_args(arguments.split())
+            args = self.people_connect_parser.parse_args(arguments.split())
         except argparse.ArgumentError as exc:
             print(exc.message, '\n', exc.argument)
             return
@@ -268,22 +271,8 @@ class Linkedinator(cmd.Cmd):
         print_pretty(Fore.RED, "X", "No more result !")
 
     def help_people_connect(self):
-        #"--gender", help="Get profile by gender. 1 = Woman, 2 = Man", type=int, choices=[1, 2]
-        #"--premium", help="Connect only with Premium", action="store_true"
-        #"--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4]
-        #"--max", help="Set maximum connections requests.\tDefault = 50", type=int, default=50
-        #"--url", help="Use custom search URL request.", type=str
-        #"--auto", help="Connect automatically with everyone.", action="store_true")
+            self.people_connect_parser.print_help()
 
-        print('\n'.join([
-            'people_connect [auto=False] [max=100] [premium_only=False] [range=0...4] [url=None]',
-            'auto           = Add everyone automatically',
-            'max            = Limit of connections',
-            'premium_only   = Select premium people only',
-            'range          = Network relation setting (4 = 1st & 2nd & 3nd degree)',
-            'url            = Set custom search url'
-        ]))
-    
     def do_companies(self):
         if self.connected == 0:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
