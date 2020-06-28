@@ -143,14 +143,14 @@ class Linkedinator(cmd.Cmd):
 
     def do_connect(self, args):
         """Connect to your Linkedin account"""
-        self.LOGIN_URL      = "https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin"
+        LOGIN_URL      = "https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin"
 
         self.user           = getpass("Enter your phone number: ")
         self.password       = getpass("Enter your password : ")
 
         print("\nLet's connect\n")
 
-        self.driver.get(self.LOGIN_URL)
+        self.driver.get(LOGIN_URL)
         WebDriverWait(self.driver, 3).until(EC.visibility_of_element_located((By.NAME, 'session_key')))
 
         input_field     = self.driver.find_element_by_name('session_key')
@@ -273,10 +273,30 @@ class Linkedinator(cmd.Cmd):
     def help_people_connect(self):
         self.people_connect_parser.print_help()
 
-    def do_companies(self):
+    def do_companies(self, args):
+        i = 1
+        COMPANIE_URL = "https://www.linkedin.com/search/results/companies/?keywords="
         if self.connected == 0:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
             return
+        country = input("(optional) Country : ")
+        tags = input("Enter your tags : ")
+        
+        self.driver.get(COMPANIE_URL + tags + '&page='  + str(i))
+        while self.element_exist_by_class("artdeco-empty-state__headline") is False:
+            companies = self.driver.find_element_by_class_name('reusable-search__result-container')
+            for companie in companies:
+                d_country = companie.find_element_by_class_name('entity-result__primary-subtitle').text
+                if country and country not in d_country:
+                    pass
+                d_name = companie.find_element_by_class_name('entity-result__title-text').text
+                try:
+                    d_summary = companie.find_element_by_class_name('entity-result__summary').text
+                except: 
+                    d_summary = ''
+                print(d_name + '\n' + d_country + '\n' + d_summary + '-----------------------------------')
+            i += 1
+            self.driver.get(COMPANIE_URL + tags + '&page='  + str(i))
         return
     
     def do_exit(self, line):
