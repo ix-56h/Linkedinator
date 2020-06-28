@@ -74,7 +74,7 @@ range_list = ['', '"F"', '"S"', '"O"', '"O"%2C"F"%2C"S"']
 def format_url(range, tags, url):
     if url:
         return urllib.parse.unquote(self.args.url).replace('\\', '') + '&page='
-    elif range >= 1 and range <= 4:
+    elif range and range >= 1 and range <= 4:
         tags = 'https://www.linkedin.com/search/results/people/?facetNetwork=["'+range_list[range]+'"]&keywords='+ tags +'&origin=FACETED_SEARCH&page='
     return 'https://www.linkedin.com/search/results/people/?keywords='+ tags +'&origin=FACETED_SEARCH&page='
 
