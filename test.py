@@ -184,7 +184,7 @@ class Linkedinator(cmd.Cmd):
         else :
             print_pretty(Fore.CYAN, "!", "Custom search request used. -u/--url")
         
-        search_url = format_url(args.range, tags, argandrl)
+        search_url = format_url(args.range, tags, args.url)
 
         while self.check_exists_by_xpath("//div[@class='search-no-results__container']") is False :
             # Get all profiles
