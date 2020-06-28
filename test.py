@@ -43,6 +43,12 @@ class ArgumentParser(argparse.ArgumentParser):
                 return action
             elif action.dest == name:
                 return action
+    def parse_args(self, args=None, namespace=None):
+        args, argv = self.parse_known_args(args, namespace)
+        if argv:
+            msg = _('unrecognized arguments: %s')
+            #self.error(msg % ' '.join(argv))
+        return args
 
     def error(self, message):
         exc = sys.exc_info()[1]
@@ -160,7 +166,7 @@ class Linkedinator(cmd.Cmd):
         input_field.send_keys(Keys.RETURN)
 
         try:
-            WebDriverWait(self.driver, 4).until(EC.visibility_of_element_located((By.CLASS_NAME, 'nav-item__profile-member-photo')))
+            WebDriverWait(self.driver, 7).until(EC.visibility_of_element_located((By.CLASS_NAME, 'nav-item__profile-member-photo')))
             if self.element_exist_by_class('nav-item__profile-member-photo') is not False :
                 print_pretty(Fore.GREEN, "SUCCESS", "Connexion succeed !")
                 self.connected = 1
