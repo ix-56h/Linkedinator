@@ -282,5 +282,5 @@ class Linkedinator(cmd.Cmd):
         print
 
 if __name__ == '__main__':
-    Linkedinator()
-    Linkedinator().cmdloop()
+    instance = Linkedinator()
+    instance.cmdloop()
