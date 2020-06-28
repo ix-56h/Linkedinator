@@ -186,7 +186,7 @@ class Linkedinator(cmd.Cmd):
             args = self.people_connect_parser.parse_args(arguments.split())
         except argparse.ArgumentError as exc:
             print(exc.message, '\n', exc.argument)
-            return
+            return 
 
         if not args.url :
             tags = input("Enter your tags : ")
