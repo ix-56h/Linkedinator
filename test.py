@@ -150,17 +150,17 @@ class Linkedinator(cmd.Cmd):
         input_field.send_keys(Keys.RETURN)
 
         try:
-            WebDriverWait(self.driver, 7).until(EC.visibility_of_element_located((By.CLASS_NAME, 'nav-item__profile-member-photo')))
+            WebDriverWait(self.driver, 4).until(EC.visibility_of_element_located((By.CLASS_NAME, 'nav-item__profile-member-photo')))
+            if self.element_exist_by_class('nav-item__profile-member-photo') is not False :
+                print_pretty(Fore.GREEN, "SUCCESS", "Connexion succeed !")
+                self.connected = 1
+                self.prompt = Fore.GREEN+'Connected'+Fore.RESET+'> '
+            else:
+                print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
         except Exception as e :
             if self.args.debug :
                 print(e);
                 traceback.print_exc()
-            print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
-        if self.element_exist_by_class('nav-item__profile-member-photo') is not False :
-            print_pretty(Fore.GREEN, "SUCCESS", "Connexion succeed !")
-            self.connected = 1
-            self.prompt = Fore.GREEN+'Connected'+Fore.RESET+'> '
-        else:
             print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
 
     def do_people_connect(self, arguments):
