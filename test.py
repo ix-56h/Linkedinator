@@ -43,12 +43,6 @@ class ArgumentParser(argparse.ArgumentParser):
                 return action
             elif action.dest == name:
                 return action
-    def parse_args(self, args=None, namespace=None):
-        args, argv = self.parse_known_args(args, namespace)
-        if argv:
-            msg = _('unrecognized arguments: %s')
-            #self.error(msg % ' '.join(argv))
-        return args
 
     def error(self, message):
         exc = sys.exc_info()[1]
@@ -277,7 +271,7 @@ class Linkedinator(cmd.Cmd):
         print_pretty(Fore.RED, "X", "No more result !")
 
     def help_people_connect(self):
-            self.people_connect_parser.print_help()
+        self.people_connect_parser.print_help()
 
     def do_companies(self):
         if self.connected == 0:
@@ -285,7 +279,7 @@ class Linkedinator(cmd.Cmd):
             return
         return
     
-    def do_EOF(self, line):
+    def do_exit(self, line):
         return True
     
     def postloop(self):
