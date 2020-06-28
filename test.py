@@ -91,7 +91,7 @@ class Linkedinator(cmd.Cmd):
         parser.add_argument("--debug", help="Set debug flag", action="store_true")
         try:
            self.args = parser.parse_args()
-        except argparse.ArgumentError, exc:
+        except argparse.ArgumentError as exc:
             print(exc.message, '\n', exc.argument)
             return False
 
@@ -166,7 +166,7 @@ class Linkedinator(cmd.Cmd):
         parser.add_argument("--auto", help="Connect automatically with everyone.", action="store_true")
         try:
             args = parser.parse_args(arguments.split())
-        except argparse.ArgumentError, exc:
+        except argparse.ArgumentError as exc:
             print(exc.message, '\n', exc.argument)
             return
 
@@ -260,14 +260,14 @@ class Linkedinator(cmd.Cmd):
         #"--url", help="Use custom search URL request.", type=str
         #"--auto", help="Connect automatically with everyone.", action="store_true")
 
-        print '\n'.join([
+        print('\n'.join([
             'people_connect [auto=False] [max=100] [premium_only=False] [range=0...4] [url=None]',
             'auto           = Add everyone automatically',
             'max            = Limit of connections',
             'premium_only   = Select premium people only',
             'range          = Network relation setting (4 = 1st & 2nd & 3nd degree)',
             'url            = Set custom search url'
-        ])
+        ]))
     
     def do_companies(self):
         if self.connected == 0:
