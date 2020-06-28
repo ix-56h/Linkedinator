@@ -81,6 +81,7 @@ def format_url(range, tags, url):
 class Linkedinator(cmd.Cmd):
     """Simple command processor example."""
     def __init__(self):
+        cmd.Cmd.__init__(self)
         self.driver_path    = f"{os.getcwd()}/drivers/"
         self.connected      = 0
 
