@@ -78,7 +78,7 @@ def format_url(range, tags, url):
         tags = 'https://www.linkedin.com/search/results/people/?facetNetwork=["'+range_list[range]+'"]&keywords='+ tags +'&origin=FACETED_SEARCH&page='
     return 'https://www.linkedin.com/search/results/people/?keywords='+ tags +'&origin=FACETED_SEARCH&page='
 
-class Linkedinator(cmd.Cmd):
+class Linkedinator(self, cmd.Cmd):
     """Simple command processor example."""
     def __init__(self):
         cmd.Cmd.__init__(self)
@@ -96,6 +96,7 @@ class Linkedinator(cmd.Cmd):
             print(exc.message, '\n', exc.argument)
             return False
 
+        print_pretty(Fore.Yellow, "...", "Setting up selenium")
         if "firefox" in self.args.driver :
             self.options        = webdriver.firefox.options.Options()
         elif "chrome" in self.args.driver:
@@ -113,6 +114,7 @@ class Linkedinator(cmd.Cmd):
             if not self.args.live:
                 self.options.add_argument('headless');
             self.driver = webdriver.Chrome(executable_path=self.driver_path+"chromedriver" + binary_suffix, chrome_options=self.options)
+        print_pretty(Fore.Cyan, "O", "Success")
 
     def element_exist_by_class(self, element):
         try :
