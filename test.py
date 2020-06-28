@@ -165,7 +165,7 @@ class Linkedinator(cmd.Cmd):
         if self.connected == 0:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
             return
-        
+        i = 1
         parser = argparse.ArgumentParser(prog='people_connect')
         parser.add_argument("-g", "--gender", help="Get profile by gender. 1 = Woman, 2 = Man", type=int, choices=[1, 2])
         parser.add_argument("-r", "--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4])
@@ -185,6 +185,7 @@ class Linkedinator(cmd.Cmd):
             print_pretty(Fore.CYAN, "!", "Custom search request used. -u/--url")
         
         search_url = format_url(args.range, tags, args.url)
+        self.driver.get(search_url + str(i))
 
         while self.check_exists_by_xpath("//div[@class='search-no-results__container']") is False :
             # Get all profiles
@@ -257,7 +258,7 @@ class Linkedinator(cmd.Cmd):
                     pass
             i += 1
             print_pretty(Fore.CYAN, "...", "Loading page" + str(i) + "...")
-            self.driver.get(tags + str(i))
+            self.driver.get(search_url + str(i))
         print_pretty(Fore.RED, "X", "No more result !")
 
     def help_people_connect(self):
