@@ -189,7 +189,7 @@ class Linkedinator(cmd.Cmd):
         while self.check_exists_by_xpath("//div[@class='search-no-results__container']") is False :
             # Get all profiles
             time.sleep(1);
-            if element_exist_by_class("search-paywall__limit") == True:
+            if self.element_exist_by_class("search-paywall__limit") == True:
                 print_pretty(Fore.YELLOW, "REACH_MAX_SEARCH", "Limit of search reached.")
                 pass
             profiles = self.driver.find_elements_by_class_name('search-result__occluded-item')
