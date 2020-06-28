@@ -156,10 +156,12 @@ class Linkedinator(cmd.Cmd):
                 print(e);
                 traceback.print_exc()
             print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
-        if self.driver.find_element_by_class_name('nav-item__profile-member-photo') is not False :
+        if self.element_exist_by_class('nav-item__profile-member-photo') is not False :
             print_pretty(Fore.GREEN, "SUCCESS", "Connexion succeed !")
             self.connected = 1
             self.prompt = Fore.GREEN+'Connected'+Fore.RESET+'> '
+        else:
+            print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
 
     def do_people_connect(self, arguments):
         if self.connected == 0:
