@@ -84,6 +84,7 @@ class Linkedinator(cmd.Cmd):
         cmd.Cmd.__init__(self)
         self.driver_path    = f"{os.getcwd()}/drivers/"
         self.connected      = 0
+        self.prompt         = '$> '
 
         parser              = argparse.ArgumentParser()
         parser.add_argument("-d", "--driver", help="Set the driver to use.", type=str, choices=["firefox", "chrome"], required=True)
@@ -148,13 +149,11 @@ class Linkedinator(cmd.Cmd):
                 print(e);
                 traceback.print_exc()
             print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
-            return False
         if self.driver.find_element_by_class_name('nav-item__profile-member-photo') is not False :
             print_pretty(Fore.GREEN, "SUCCESS", "Connexion succeed !")
             self.connected = 1
-            return True
-        return False
-    
+            self.prompt = Fore.GREEN+'Connected'+Fore.RESET+'> '
+
     def do_people_connect(self, arguments):
         if self.connected == 0:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
@@ -253,7 +252,6 @@ class Linkedinator(cmd.Cmd):
             print_pretty(Fore.CYAN, "...", "Loading page" + str(i) + "...")
             self.driver.get(tags + str(i))
         print_pretty(Fore.RED, "X", "No more result !")
-        return
 
     def help_people_connect(self):
         #"--gender", help="Get profile by gender. 1 = Woman, 2 = Man", type=int, choices=[1, 2]
