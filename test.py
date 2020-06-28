@@ -284,17 +284,20 @@ class Linkedinator(cmd.Cmd):
         
         self.driver.get(COMPANIE_URL + tags + '&page='  + str(i))
         while self.element_exist_by_class("artdeco-empty-state__headline") is False:
-            companies = self.driver.find_element_by_class_name('reusable-search__result-container')
+            companies = self.driver.find_elements_by_class_name('reusable-search__result-container')
             for companie in companies:
-                d_country = companie.find_element_by_class_name('entity-result__primary-subtitle').text
-                if country and country not in d_country:
-                    pass
-                d_name = companie.find_element_by_class_name('entity-result__title-text').text
                 try:
-                    d_summary = companie.find_element_by_class_name('entity-result__summary').text
-                except: 
-                    d_summary = ''
-                print(d_name + '\n' + d_country + '\n' + d_summary + '-----------------------------------')
+                    d_country = companie.find_element_by_class_name('entity-result__primary-subtitle').text
+                    if country and country not in d_country:
+                        pass
+                    d_name = companie.find_element_by_class_name('entity-result__title-text').text
+                    try:
+                        d_summary = companie.find_element_by_class_name('entity-result__summary').text
+                    except: 
+                        d_summary = ''
+                    print(d_name + '\n' + d_country + '\n' + d_summary + '\n----------------------------------------------------')
+                except:
+                    pass
             i += 1
             self.driver.get(COMPANIE_URL + tags + '&page='  + str(i))
         return
