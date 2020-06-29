@@ -19,6 +19,7 @@ from art import *
 import urllib.parse
 import warnings
 import traceback
+import string
 
 op_sys = platform.system()
 binary_suffix = ''
@@ -26,11 +27,15 @@ if op_sys == "Windows" :
     binary_suffix = '.exe'
 warnings.filterwarnings('ignore')
 
+def partition_line(line):
+    splited = line.split(':')
+    return (splited[0], splited[1])
+
+
 class StuffYouNeed():
         def __init__(self):
             self.stuff_you_need = {}
             self.stuff_you_have = {}
-            return True
 
         def need(self, stuff_you_need):
             self.stuff_you_need[stuff_you_need] = '';
@@ -137,12 +142,47 @@ class Linkedinator(cmd.Cmd):
         self.people_connect_parser.add_argument("-r", "--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4])
         self.people_connect_parser.add_argument("-m", "--max", help="Set maximum connections requests.\tDefault = 50", type=int, default=50)
         self.people_connect_parser.add_argument("-P", "--premium", help="Connect only with Premium", action="store_true")
-        # pass = open("password"
-        stuff = f.splitlines()
-        (stuff_you_need, stuff_you_have) = stuff.split(':')
+        self.people_connect_parser.add_argument("-u", "--url", help="Use custom search URL request.", type=str)
+        self.people_connect_parser.add_argument("--auto", help="Connect automatically with everyone.", action="store_true")
 
-        for (need, have) in zip(stuff_you_need, stuff_you_have):
-            self.stuff_you_need.have(need, have)
+        print_pretty(Fore.YELLOW, "...", "Setting up selenium")
+        if "firefox" in self.args.driver :
+            self.options        = webdriver.firefox.options.Options()
+        elif "chrome" in self.args.driver:
+            self.options        = webdriver.chrome.options.Options()
+        self.options.add_argument('--profile-directory=Default')
+        self.options.add_argument("--disable-plugins-discovery");
+        self.options.add_argument('window-size=1200x900')
+        if self.args.location:
+            self.options.binary_location = self.args.location
+        if "firefox" in self.args.driver :
+            if not self.args.live:
+                self.options.headless = True;
+            self.driver = webdriver.Firefox(executable_path=self.driver_path+"geckodriver" + binary_suffix, options=self.options)
+        elif "chrome" in self.args.driver:
+            if not self.args.live:
+                self.options.add_argument('headless');
+            self.driver = webdriver.Chrome(executable_path=self.driver_path+"chromedriver" + binary_suffix, chrome_options=self.options)
+        self.stuff_you_need = StuffYouNeed();
+        self.stuff_you_need.need('session_key').need('session_password').need('tags').need('Country').need('phone number').need('password')
+        try:
+            f = open("stuff", "r")
+            stuff = f.readlines()
+            stuff = map(partition_line, stuff)
+            for (need, have) in stuff:
+                self.stuff_you_need.have(need, have)
+            f = open("password", "r")
+            password = f.readlines()
+            password = list(map(partition_line, password))
+            (_, password) = password[0]
+            self.stuff_you_need.have('password', password)
+            
+                
+        except FileNotFoundError as err:
+           print('There is no stuff configuration')
+                
+            
+        
         print_pretty(Fore.CYAN, "O", "Success")
 
     def element_exist_by_class(self, element):
@@ -163,8 +203,8 @@ class Linkedinator(cmd.Cmd):
         """Connect to your Linkedin account"""
         LOGIN_URL      = "https://www.linkedin.com/login?fromSignIn=true&trk=guest_homepage-basic_nav-header-signin"
 
-        self.user           = getpass("Enter your phone number: ")
-        self.password       = getpass("Enter your password : ")
+        self.user = self.stuff_you_need.get('phone number')
+        self.password = self.stuff_you_need.get('password')
 
         print("\nLet's connect\n")
 
