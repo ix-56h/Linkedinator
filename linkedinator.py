@@ -73,7 +73,7 @@ range_list = ['', '"F"', '"S"', '"O"', '"O"%2C"F"%2C"S"']
 # Format url
 def format_url(range, tags, url):
     if url:
-        return urllib.parse.unquote(self.args.url).replace('\\', '') + '&page='
+        return urllib.parse.unquote(url).replace('\\', '') + '&page='
     elif range and range >= 1 and range <= 4:
         tags = 'https://www.linkedin.com/search/results/people/?facetNetwork=["'+range_list[range]+'"]&keywords='+ tags +'&origin=FACETED_SEARCH&page='
     return 'https://www.linkedin.com/search/results/people/?keywords='+ tags +'&origin=FACETED_SEARCH&page='
@@ -180,7 +180,7 @@ class Linkedinator(cmd.Cmd):
         i = 1
         requests_count  = 0
         answer          = 'y'
-
+        tags            = ''
         if self.connected == 0:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
             return
