@@ -326,6 +326,9 @@ class Linkedinator(cmd.Cmd):
         f.close()
         return
     
+    def help_companies(self):
+        print('List companies with informations (contact, specialization, website...) matching with your search request.')
+
     def do_exit(self, line):
         return True
     
