@@ -26,6 +26,39 @@ if op_sys == "Windows" :
     binary_suffix = '.exe'
 warnings.filterwarnings('ignore')
 
+class StuffYouNeed():
+        def __init__(self):
+            self.stuff_you_need = {}
+            self.stuff_you_have = {}
+            return True
+
+        def need(self, stuff_you_need):
+            self.stuff_you_need[stuff_you_need] = '';
+            return self
+
+        def is_needed(self, stuff_youd_need):
+            if stuff_youd_need in self.stuff_you_need:
+                return True
+            else:
+                return False
+
+        def have(self, stuff_you_need, stuff_youd_get):
+            self.need(stuff_you_need)
+            self.stuff_you_have[stuff_you_need] = stuff_youd_get
+            return self
+        
+        def get(self, stuff_you_need):            
+            if stuff_you_need in self.stuff_you_have:
+                stuff_you_get = self.stuff_you_have[stuff_you_need]
+                return stuff_you_get
+            else:                
+                stuff_you_get = input('Enter your ' + stuff_you_need + ":")
+                self.need(stuff_you_need)
+                self.stuff_you_have[stuff_you_need] = stuff_you_get
+                return stuff_you_get
+
+
+
 # Overriding of ArgumentParser function to avoid exit when parsing failed
 class ArgumentParser(argparse.ArgumentParser):
     def _get_action_from_name(self, name):
@@ -104,27 +137,12 @@ class Linkedinator(cmd.Cmd):
         self.people_connect_parser.add_argument("-r", "--range", help="Set \"mutual connection\" search argument. 4 = All, Default = Don't care", type=int, choices=[1, 2, 3, 4])
         self.people_connect_parser.add_argument("-m", "--max", help="Set maximum connections requests.\tDefault = 50", type=int, default=50)
         self.people_connect_parser.add_argument("-P", "--premium", help="Connect only with Premium", action="store_true")
-        self.people_connect_parser.add_argument("-u", "--url", help="Use custom search URL request.", type=str)
-        self.people_connect_parser.add_argument("--auto", help="Connect automatically with everyone.", action="store_true")
+        # pass = open("password"
+        stuff = f.splitlines()
+        (stuff_you_need, stuff_you_have) = stuff.split(':')
 
-        print_pretty(Fore.YELLOW, "...", "Setting up selenium")
-        if "firefox" in self.args.driver :
-            self.options        = webdriver.firefox.options.Options()
-        elif "chrome" in self.args.driver:
-            self.options        = webdriver.chrome.options.Options()
-        self.options.add_argument('--profile-directory=Default')
-        self.options.add_argument("--disable-plugins-discovery");
-        self.options.add_argument('window-size=1200x900')
-        if self.args.location:
-            self.options.binary_location = self.args.location
-        if "firefox" in self.args.driver :
-            if not self.args.live:
-                self.options.headless = True;
-            self.driver = webdriver.Firefox(executable_path=self.driver_path+"geckodriver" + binary_suffix, options=self.options)
-        elif "chrome" in self.args.driver:
-            if not self.args.live:
-                self.options.add_argument('headless');
-            self.driver = webdriver.Chrome(executable_path=self.driver_path+"chromedriver" + binary_suffix, chrome_options=self.options)
+        for (need, have) in zip(stuff_you_need, stuff_you_have):
+            self.stuff_you_need.have(need, have)
         print_pretty(Fore.CYAN, "O", "Success")
 
     def element_exist_by_class(self, element):
@@ -158,9 +176,12 @@ class Linkedinator(cmd.Cmd):
 
         input_field     = self.driver.find_element_by_name('session_key')
         input_field.send_keys(self.user)
+        self.stuff_you_need.have('session_key', input_field)
         input_field     = self.driver.find_element_by_name('session_password')
         input_field.send_keys(self.password)
         input_field.send_keys(Keys.RETURN)
+        self.stuff_you_need.have('session_password', input_field)
+                
 
         try:
             WebDriverWait(self.driver, 7).until(EC.visibility_of_element_located((By.CLASS_NAME, 'nav-item__profile-member-photo')))
@@ -192,7 +213,8 @@ class Linkedinator(cmd.Cmd):
             return 
 
         if not args.url :
-            tags = input("Enter your tags : ")
+            tags = self.stuff_you_get('tags')
+            # tags = input("Enter your tags : ")
         else :
             print_pretty(Fore.CYAN, "!", "Custom search request used. -u/--url")
         
@@ -292,9 +314,9 @@ class Linkedinator(cmd.Cmd):
         if self.connected == 0:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
             return
-        country = input("(optional) Countries separate by pipe (\"|\") : ")
-        
+        country = self.stuff_you_need.get('(optional) Countries seperated by pipe (|)');
         tags = input("Enter your tags : ")
+        tags = self.stuff_you_need.get('tags');
         
         self.driver.get(COMPANIE_URL + tags + '&page='  + str(i))
         f = open("companies.txt", "w+")
