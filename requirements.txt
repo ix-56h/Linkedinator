@@ -3,3 +3,4 @@ colorama
 selenium
 requests
 gender_guesser
+base64
