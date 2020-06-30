@@ -20,7 +20,7 @@ import urllib.parse
 import warnings
 import traceback
 import string
-
+import base64
 op_sys = platform.system()
 binary_suffix = ''
 if op_sys == "Windows" :
@@ -61,6 +61,10 @@ class StuffYouNeed():
                 self.need(stuff_you_need)
                 self.stuff_you_have[stuff_you_need] = stuff_you_get
                 return stuff_you_get
+        def what_is_needed(self):
+            return iter(self.stuff_you_need)
+        def what_we_have(self):
+            return iter(self.stuff_you_have)
 
         def safe_get(self, stuff_you_need):            
             if stuff_you_need in self.stuff_you_have:
@@ -173,25 +177,32 @@ class Linkedinator(cmd.Cmd):
                 self.options.add_argument('headless');
             self.driver = webdriver.Chrome(executable_path=self.driver_path+"chromedriver" + binary_suffix, chrome_options=self.options)
         self.stuff_you_need = StuffYouNeed();
-        self.stuff_you_need.need('session_key').need('session_password').need('tags').need('Country').need('phone number').need('password')
+        self.stuff_you_need.need('tags').need('Country').need('phone number').need('password')
         try:
             f = open("stuff", "r")
             stuff = f.readlines()
             stuff = map(partition_line, stuff)
             for (need, have) in stuff:
                 self.stuff_you_need.have(need, have)
+        except FileNotFoundError as err:
+           print('There is no stuff configuration')
+        try:
             f = open("password", "r")
             password = f.readlines()
             password = list(map(partition_line, password))
-            (_, password) = password[0]
+            (_, password) = (password[0], base64.b64decode(password[0][1]).decode('utf-8'))
             self.stuff_you_need.have('password', password)
-            
-                
         except FileNotFoundError as err:
-           print('There is no stuff configuration')
-                
+            print('There is no password configuration (base64 encoded)')
             
-        
+        print("=== Stuff the linkedinator needs from you ===")
+        for needed_stuff in self.stuff_you_need.what_is_needed():
+            print (needed_stuff)
+        print('=============================================')
+        print("=== The linkedinator have ===================")
+        for stuff in self.stuff_you_need.what_we_have():
+            print (stuff)
+        print("=============================================")
         print_pretty(Fore.CYAN, "O", "Success")
 
     def element_exist_by_class(self, element):
@@ -262,7 +273,7 @@ class Linkedinator(cmd.Cmd):
             return 
 
         if not args.url :
-            tags = self.stuff_you_get('tags')
+            tags = self.stuff_you_need.get('tags')
             # tags = input("Enter your tags : ")
         else :
             print_pretty(Fore.CYAN, "!", "Custom search request used. -u/--url")
@@ -363,8 +374,7 @@ class Linkedinator(cmd.Cmd):
         if self.connected == 0:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
             return
-        country = self.stuff_you_need.get('(optional) Countries seperated by pipe (|)');
-        tags = input("Enter your tags : ")
+        country = self.stuff_you_need.get('Country');
         tags = self.stuff_you_need.get('tags');
         
         self.driver.get(COMPANIE_URL + tags + '&page='  + str(i))
