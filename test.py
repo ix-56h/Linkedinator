@@ -83,7 +83,7 @@ class Linkedinator(cmd.Cmd):
     def __init__(self):
         cmd.Cmd.__init__(self)
         self.driver_path    = f"{os.getcwd()}/drivers/"
-        self.connected      = 0
+        self.connected      = False
         self.prompt         = '$> '
 
         # Main script arguments definition
@@ -163,7 +163,7 @@ class Linkedinator(cmd.Cmd):
             WebDriverWait(self.driver, 7).until(EC.visibility_of_element_located((By.CLASS_NAME, 'nav-item__profile-member-photo')))
             if self.element_exist_by_class('nav-item__profile-member-photo') is not False :
                 print_pretty(Fore.GREEN, "SUCCESS", "Connexion succeed !")
-                self.connected = 1
+                self.connected = True
                 self.prompt = Fore.GREEN+'Connected'+Fore.RESET+'> '
             else:
                 print_pretty(Fore.RED, "FAILED", "Connexion Failed...")
@@ -178,7 +178,7 @@ class Linkedinator(cmd.Cmd):
         requests_count  = 0
         answer          = 'y'
 
-        if self.connected == 0:
+        if self.connected is False:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
             return
 
@@ -276,7 +276,7 @@ class Linkedinator(cmd.Cmd):
     def do_companies(self, args):
         i = 1
         COMPANIE_URL = "https://www.linkedin.com/search/results/companies/?keywords="
-        if self.connected == 0:
+        if self.connected is False:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
             return
         country = input("(optional) Country : ")
