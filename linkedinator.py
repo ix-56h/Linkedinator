@@ -177,7 +177,7 @@ class Linkedinator(cmd.Cmd):
                 self.options.add_argument('headless');
             self.driver = webdriver.Chrome(executable_path=self.driver_path+"chromedriver" + binary_suffix, chrome_options=self.options)
         self.stuff_you_need = StuffYouNeed();
-        self.stuff_you_need.need('tags').need('Country').need('phone number').need('password')
+        self.stuff_you_need.need('tags').need('country').need('phone number').need('password')
         try:
             f = open("stuff", "r")
             stuff = f.readlines()
@@ -194,6 +194,8 @@ class Linkedinator(cmd.Cmd):
             self.stuff_you_need.have('password', password)
         except FileNotFoundError as err:
             print('There is no password configuration (base64 encoded)')
+        except:
+            print('Could not decode password')
             
         print("=== Stuff the linkedinator needs from you ===")
         for needed_stuff in self.stuff_you_need.what_is_needed():
@@ -204,6 +206,9 @@ class Linkedinator(cmd.Cmd):
             print (stuff)
         print("=============================================")
         print_pretty(Fore.CYAN, "O", "Success")
+        we_have = self.stuff_you_need.what_we_have();
+        if 'phone number' in we_have and 'password' in we_have:
+            self.do_connect(self)
 
     def element_exist_by_class(self, element):
         try :
@@ -374,7 +379,7 @@ class Linkedinator(cmd.Cmd):
         if self.connected == 0:
             print_pretty(Fore.RED, "Error", "No active connection. Please, use `connect` command.")
             return
-        country = self.stuff_you_need.get('Country');
+        country = self.stuff_you_need.get('country');
         tags = self.stuff_you_need.get('tags');
         
         self.driver.get(COMPANIE_URL + tags + '&page='  + str(i))
