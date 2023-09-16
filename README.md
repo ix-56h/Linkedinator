@@ -1,44 +1,45 @@
-# Linkedinator
-
-Linkedin bot to connect with people matching with your search request.
+# Linkedinator - Elevate Your LinkedIn Networking
 
 ![Linkedinator](https://www.zupimages.net/up/20/10/sq8g.png)
 
+Enhance your LinkedIn networking game with Linkedinator, your intelligent LinkedIn bot. Connect effortlessly with professionals who match your search criteria and build meaningful connections in just a few clicks.
+
 ## Installation
+
+Getting started with Linkedinator is a breeze. Simply run the following command:
 
 ```bash
 sh setup.sh
 ```
-Download the [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) or [geckodriver](https://github.com/mozilla/geckodriver/releases/tag/v0.26.0) corresponding to your browser version and your system into `drivers` directory.
+
+Additionally, download the appropriate [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/) or [geckodriver](https://github.com/mozilla/geckodriver/releases/tag/v0.26.0) based on your browser version and system architecture. Place the downloaded driver into the `drivers` directory.
 
 ## Usage
 
-```
-usage: linkedinator.py [-h] -d {firefox,chrome} [-g {1,2}] [-r {1,2,3,4}] [-m MAX] [-l LOCATION] [-L] [-P] [--debug]
-                       [--auto]
+Linkedinator offers versatile functionality to tailor your networking approach. Here's how you can use it:
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -d {firefox,chrome}, --driver {firefox,chrome}
-                        Set the driver to use.
-  -g {1,2}, --gender {1,2}
-                        Get profile by gender. 1 = Woman, 2 = Man
-  -r {1,2,3,4}, --range {1,2,3,4}
-                        Set "mutual connection" search argument. 4 = All, Default = Don't care
-  -m MAX, --max MAX     Set maximum connections requests. Default = 50
-  -l LOCATION, --location LOCATION
-                        Set the browser binary location
-  -L, --live            Run the bot in live mod
-  -P, --premium         Connect only with Premium
-  --debug               Set debug flag
-  --auto                Connect automatically with everyone.
+```shell
+usage: linkedinator.py [-h] -d {firefox,chrome} [-g {1,2}] [-r {1,2,3,4}] [-m MAX] [-l LOCATION] [-L] [-P] [--debug] [--auto]
 ```
 
-## OS X
-Use iterm2 if you want to see images in your terminal.
+**Options**:
 
-## WINDOWS & LINUX
-Can't display images, sorry.
+- `-h, --help`: Display this help message and exit.
+- `-d {firefox,chrome}, --driver {firefox,chrome}`: Select the browser driver to use.
+- `-g {1,2}, --gender {1,2}`: Filter profiles by gender. (1 = Woman, 2 = Man)
+- `-r {1,2,3,4}, --range {1,2,3,4}`: Define the "mutual connection" search parameter. (4 = All, Default = Don't care)
+- `-m MAX, --max MAX`: Set the maximum number of connection requests. (Default = 50)
+- `-l LOCATION, --location LOCATION`: Specify the browser binary location.
+- `-L, --live`: Activate the bot's live mode.
+- `-P, --premium`: Connect exclusively with Premium members.
+- `--debug`: Enable debugging mode.
+- `--auto`: Automatically connect with everyone.
+
+## Compatibility
+
+- **OS X**: Enjoy image display functionality when using iTerm2.
+- **Windows & Linux**: Image display is not supported on these platforms.
 
 ## License
-[WTFPL](http://www.wtfpl.net/)
+
+Linkedinator is distributed under the [WTFPL](http://www.wtfpl.net/) license, offering you maximum freedom in its usage and modification.
